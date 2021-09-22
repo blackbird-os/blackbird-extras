@@ -1,0 +1,8 @@
+post_install() {
+  echo "You need to add your user to 'realtime' group to use wineasio."
+  echo ""
+  echo "You also need to register wineasio in you Wine prefix:"
+  echo "- For 32bit, run: regsvr32 wineasio.dll "
+  echo "- For 64bit, run: wine64 regsvr32 wineasio.dll "
+}
+# vim:set ts=2 sw=2 et:
