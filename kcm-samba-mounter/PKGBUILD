@@ -1,0 +1,44 @@
+# $Id$
+# Maintainer: Philipp Schmidt <philschmidt@gmx.net>
+# Maintainer: James Kittsmiller (AJSlye) <james@nulogicsystems.com>
+
+_pkgname=samba-mounter
+pkgname=kcm-samba-mounter
+pkgver=0+git20210921.45bc456
+pkgrel=1
+pkgdesc="KDE control module mount tool for samba"
+url="https://invent.kde.org/system/samba-mounter"
+arch=('i686' 'x86_64')
+license=('GPL')
+groups=('ds9-extras')
+depends=('kauth' 'cifs-utils' 'smbclient' 'kcmutils' 'kconfig' 'kio' 'ki18n' 'solid')
+makedepends=('cmake' 'git' 'extra-cmake-modules')
+replaces=('samba-mounter' 'samba-mounter-git' 'samba-mounter-frameworks-git')
+source=("git+https://invent.kde.org/system/samba-mounter")
+sha256sums=('SKIP')
+
+pkgver() {
+cd "$srcdir/$_pkgname"
+printf "0+git`date +%Y%m%d`.%s"  "$(git rev-parse --short HEAD)"
+}
+
+prepare() {
+  mkdir -p build
+}
+
+build() {
+  cd build
+  cmake ../${_pkgname} \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DLIB_INSTALL_DIR=lib \
+    -DKDE_INSTALL_USE_QT_SYS_PATHS=ON \
+    -DBUILD_TESTING=OFF
+  make
+}
+
+
+package() {
+  cd build
+  make DESTDIR="${pkgdir}" install
+}

@@ -1,0 +1,41 @@
+# $Id$
+# Maintainer: James Kittsmiller (AJSlye) <james@nulogicsystems.com>
+
+pkgname=kcm-about-extended
+pkgver=0+git20210910.f85e06c
+pkgrel=1
+pkgdesc='Extended version of the about-distro module'
+arch=('i686' 'x86_64')
+url='https://github.com/ds9-extras/kcm-about-extended'
+license=('LGPL')
+groups=('ds9-extras')
+depends=('qt5-base' 'networkmanager-qt' 'kcmutils' 'kdesignerplugin' 'kdelibs4support' 'kdoctools' 'ki18n' 'kinit' 'kwin' 'solid' 'wayland')
+makedepends=('git' 'cmake' 'extra-cmake-modules')
+conflicts=('kdebase-workspace')
+source=('git://github.com/ds9-extras/kcm-about-extended')
+md5sums=('SKIP')
+
+pkgver() {
+cd "$srcdir/$pkgname"
+printf "0+git`date +%Y%m%d`.%s"  "$(git rev-parse --short HEAD)"
+}
+
+prepare() {
+  mkdir -p build
+}
+
+build() {
+  cd build
+  cmake ../${pkgname} \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DKDE_INSTALL_LIBDIR=lib \
+    -DKDE_INSTALL_USE_QT_SYS_PATHS=ON \
+    -DBUILD_TESTING=OFF
+  make
+}
+
+package() {
+  cd build
+  make DESTDIR="${pkgdir}" install
+}
