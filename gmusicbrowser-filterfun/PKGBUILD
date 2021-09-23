@@ -1,0 +1,53 @@
+# Maintainer: Fabio 'Lolix' Loli <fabio.loli@disroot.org> -> https://github.com/FabioLolix
+# Contributor: Spike29 <leguen.yannick@gmail.com>
+# Contributor: jsteel <mail at jsteel dot org>
+# Contributor: Corrado Primier <bardo@aur.archlinux.org>
+# Maintainer: James Kittsmiller (AJSlye) <james@nulogicsystems.com>
+
+_pkgname=gmusicbrowser
+pkgname=gmusicbrowser-filterfun
+pkgver=1.1.16
+pkgrel=1
+pkgdesc="Open-source jukebox for large collections of mp3/ogg/flac files, written in perl."
+arch=(any)
+url="https://gmusicbrowser.org/"
+license=(GPL3)
+depends=(gtk2-perl perl-net-dbus perl-locale-gettext perl-glib-object-introspection)
+makedepends=(discount)
+optdepends=('alsa-utils: enables the ALSA backend'
+            'flac123: flac support for the ALSA backend'
+            'mpg321: mp3 support for the ALSA backend'
+            'vorbis-tools: vorbis support for the ALSA backend'
+            'mplayer: enables the mplayer backend'
+            'mpv: enables the mpv backend'
+            'gst-plugins-base: vorbis support'
+            'gst-plugins-good: flac support'
+            'gst-plugins-ugly: mp3 support'
+            'perl-gtk2-trayicon: tray icon support'
+            'perl-gtk2-webkit: alternative web-based plugin support'
+            'perl-gnome2-wnck: titlebar plugin support'
+            'perl-html-parser: support for accented characters in lyrics plugin'
+            'perl-gtk2-notify: support for notify plugin')
+source=("$url/download/${_pkgname}-${pkgver}.tar.gz"
+        "gmbrc.default"
+        "main.layout"
+        "filterfun.layout")
+sha256sums=('c7f10578ca3008e966e66c33a4887020e4b99b6aa5580c4b4771ee228ff603fe'
+            '70f8553102a8270415c7613c811b884efe27b823e4b0161509a2b11dc56bf5da'
+            '2f50e7854198e652d92a2fe56aa4d0108ff2eae6a99a9ae48e69e4381675153a'
+            'e22bd7b45f262b5894f9bb049b23e6672b20aeba9a6f581655499ad4886ba347')
+build() {
+  cd "${srcdir}/${_pkgname}-${pkgver}"
+  make
+}
+
+
+package() {
+  cd "${srcdir}/${_pkgname}-${pkgver}"
+  make DESTDIR="$pkgdir/" install
+  
+  # Install filterfun configs for Netrunner
+  install -Dm644 "${srcdir}"/gmbrc.default "${pkgdir}"/usr/share/gmusicbrowser/gmbrc.default
+  install -Dm644 "${srcdir}"/main.layout "${pkgdir}"/usr/share/gmusicbrowser/layouts/main.layout
+  install -Dm644 "${srcdir}"/filterfun.layout "${pkgdir}"/usr/share/gmusicbrowser/layouts/filterfun.layout
+}
